@@ -3,7 +3,7 @@
  |
  |       Author:  Enamul Haque
  |     Language:  Go (Golang)
- |   To Compile:  GoLand (by JetBrains) have been used.
+ |   To Compile:  GoLand (by JetBrains) is used.
  |
  |   Instructor:  Emil Sekerinski
  |  Last Update:  20 Dec 2017
