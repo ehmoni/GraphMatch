@@ -94,19 +94,19 @@ func main(){
 
 
 	//Main graph and Sub-graph generated.
-	maingraph := randomGraph(gSize)
-	subgraph := randomGraph(sgSize)
+	maingraph := RandomGraph(gSize)
+	subgraph := RandomGraph(sgSize)
 
 
 	//Channel ch declared for communicating with the pattern matching and combination generation.
-	//Channel cj declared for communicating with the json output maker.
+	//Channel cj declared for communicating with the json Output maker.
 	ch := make(chan []int,chSize)
 	cj := make(chan []int)
 
 
 	//Writing the JSON file both the main-graph and sub-graph
-	bbb := []byte(strJSON(maingraph))
-	bb := []byte(strJSON(subgraph))
+	bbb := []byte(StrJSON(maingraph))
+	bb := []byte(StrJSON(subgraph))
 
 	err1 := ioutil.WriteFile("C:\\SourceCode\\Go\\Graphdrawing\\Graph.json", bbb, 0644)
 	check(err1)
@@ -118,20 +118,20 @@ func main(){
 	edgeIDs := make([]int,len(maingraph.Edges))
 	for i,e:=range maingraph.Edges{edgeIDs[i] = e.ID}
 
-	go combinations(edgeIDs,sgSize,ch)
+	go Combinations(edgeIDs,sgSize,ch)
 
 
 	//Sub-Graph Global Information Profiler
-	sgProfiler(subgraph)
+	SgProfiler(subgraph)
 
 	//Channeled patten searching
 	for i:=0;i<grSize;i++ {
 		//wg.Add(1)
-		go patternFinder(maingraph, ch, cj)
+		go PatternFinder(maingraph, ch, cj)
 	}
 
 	//For Output writing into json */
-	go output(*maingraph, cj)
+	go Output(*maingraph, cj)
 
 
 	//Performance Measurement
@@ -172,8 +172,8 @@ func Parallelism(n int){
 
 
 
-//sgProfiler take input the Sub-graph and makes a profile for that in the global variable to be shared by others goroutines.
-func sgProfiler(graph *Graph){
+//SgProfiler take input the Sub-graph and makes a profile for that in the global variable to be shared by others goroutines.
+func SgProfiler(graph *Graph){
 
 	sgProfile.nNodes = len(graph.Nodes)
 	sgProfile.nEdges = len(graph.Edges)
@@ -191,9 +191,9 @@ func sgProfiler(graph *Graph){
 
 
 
-//randomGraph generates random graph based on the input number of vertices.
+//RandomGraph generates random graph based on the input number of vertices.
 //It uses random integer number to select 2 nodes randomly and connect them with an edge.
-func randomGraph(size int) *Graph{
+func RandomGraph(size int) *Graph{
 
 	graph := new(Graph)
 	graph.Nodes = make([]Node, size)
@@ -252,7 +252,7 @@ func randomGraph(size int) *Graph{
 
 //combination generate all the possible combination of edges from the edge set.
 //It also uses the channel to pass information to the goroutines for pattern matching.
-func combinations(iterable []int, r int, ch chan []int){
+func Combinations(iterable []int, r int, ch chan []int){
 
 	pool := iterable
 	n := len(pool)
@@ -297,9 +297,9 @@ func combinations(iterable []int, r int, ch chan []int){
 
 
 
-//patternFinder takes the main graph and channels to receive combination data and send to output for JSON file creation.
+//PatternFinder takes the main graph and channels to receive combination data and send to Output for JSON file creation.
 //For Sub-Graph information it access the global Sub-Graph Profile as read-only mode.
-func patternFinder(mg *Graph, ch chan []int, cj chan []int){
+func PatternFinder(mg *Graph, ch chan []int, cj chan []int){
 
 	//Tracking the number of Goroutine created.
 	proc++
@@ -320,17 +320,17 @@ func patternFinder(mg *Graph, ch chan []int, cj chan []int){
 
 		//Using Set to identify unique nodes for all the edges.
 		allnodes := make([]Node, 0)
-		s := New()
+		s := new()
 		for _, v := range edges{
-			s.Insert((*v.Start).ID)
-			s.Insert((*v.End).ID)
+			s.insert((*v.Start).ID)
+			s.insert((*v.End).ID)
 			allnodes = append(allnodes, *v.Start)
 			allnodes = append(allnodes, *v.End)
 		}
 
 
 		//If the number of unique nodes matches with the number of nodes in the Sub-graph then it enters for checking.
-		if s.Len() == sgProfile.nNodes{
+		if s.len() == sgProfile.nNodes{
 
 			fmt.Println("Entered!")
 
@@ -345,10 +345,10 @@ func patternFinder(mg *Graph, ch chan []int, cj chan []int){
 			nodes := make([]Node, 0)
 			mne := make([]int, 0)
 			for _,v:=range allnodes{
-				if s.Has(v.ID){
+				if s.has(v.ID){
 					nodes = append(nodes, v)
 					mne = append(mne, v.nEdge)
-					s.Remove(v.ID)
+					s.remove(v.ID)
 				}
 			}
 			sort.Sort(sort.Reverse(sort.IntSlice(mne)))
@@ -373,7 +373,7 @@ func patternFinder(mg *Graph, ch chan []int, cj chan []int){
 		}else{match = false}
 
 
-		//If the match is found it send the information to the channel of the output for making JSON file.
+		//If the match is found it send the information to the channel of the Output for making JSON file.
 		if match{
 			fmt.Println("Found a match")
 			fmt.Println(msg)
@@ -386,9 +386,9 @@ func patternFinder(mg *Graph, ch chan []int, cj chan []int){
 
 
 
-//output take the main graph and channel to receive the output pattern for JSON file created with the pattern marks.
+//Output take the main graph and channel to receive the Output pattern for JSON file created with the pattern marks.
 //Also need to change the file name and path for using as a package. It can also be provided from main inputs.
-func output(mg Graph, cj chan []int){
+func Output(mg Graph, cj chan []int){
 
 	for{
 		msg := <-cj
@@ -400,7 +400,7 @@ func output(mg Graph, cj chan []int){
 			mg.Nodes[mg.Edges[e].End.ID].Pattern = 15
 		}
 
-		bb := []byte(strJSON(&mg))
+		bb := []byte(StrJSON(&mg))
 
 		err := ioutil.WriteFile("C:\\SourceCode\\Go\\Graphdrawing\\PattGraph.json", bb, 0644)
 		check(err)
@@ -419,9 +419,9 @@ func check(e error) {
 
 
 
-//strJSON file takes input a Graph and produce string which can be used for JSON file creation.
-//It takes into account the color and thickness of the edges (marking pattern of sub-graph in the graph) through JS output.
-func strJSON(graph *Graph) string{
+//StrJSON file takes input a Graph and produce string which can be used for JSON file creation.
+//It takes into account the color and thickness of the edges (marking pattern of sub-graph in the graph) through JS Output.
+func StrJSON(graph *Graph) string{
 
 	type NodesJ struct{
 		Id int `json:"id"`
@@ -466,25 +466,25 @@ type (
 
 
 // Creates a new set
-func New(initial ...interface{}) *Set{
+func new(initial ...interface{}) *Set{
 
 	s := &Set{make(map[interface{}]nothing)}
 
-	for _, v:=range initial{s.Insert(v)}
+	for _, v:=range initial{s.insert(v)}
 
 	return s
 }
 
 // Test to see whether or not the element is in the set
-func (this *Set) Has(element interface{}) bool{_, exists:=this.hash[element]
+func (this *Set) has(element interface{}) bool{_, exists:=this.hash[element]
 	return exists
 }
 
 // Add an element to the set
-func (this *Set) Insert(element interface{}){this.hash[element] = nothing{}}
+func (this *Set) insert(element interface{}){this.hash[element] = nothing{}}
 
-// Remove an element from the set
-func (this *Set) Remove(element interface{}){delete(this.hash, element)}
+// remove an element from the set
+func (this *Set) remove(element interface{}){delete(this.hash, element)}
 
 // Return the number of items in the set
-func (this *Set) Len() int{return len(this.hash)}
+func (this *Set) len() int{return len(this.hash)}
