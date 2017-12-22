@@ -55,10 +55,12 @@ A step by step for running GraphMatch would be:
 	var grSize = 10
 ```
 * After changing the variable values as desired, you can run the program. in my Goland IDE output it appeared as:
+
+<p></p>
 ![Output](https://github.com/enamoni/GraphMatch/blob/master/img/Output.png)
 
 
-Explain how to run the automated tests for this system
+* But of course this does not give the proper feelings, how it looks for an actual graph! To solve that, here comes the 
 
 ### Break down into end to end tests
 
