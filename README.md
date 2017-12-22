@@ -1,10 +1,8 @@
 
 # **GraphMatch** : Powered by Concurrency & Parallelism
------------------
 GraphMatch provides a Sub-graph Pattern Matching library for certain types of patterns. It uses naive searching algorithm to find the patterns in the Main-graph from the Sub-Graph. And also made good use of concurrency techniques using Golang's Channels and of course Parallelism in the processor. By the way ["Concurrency is not parallelism"](https://blog.golang.org/concurrency-is-not-parallelism) for those who have yet any confusion!
 
 ## **Architecture**
----------------------
 ![alt text](https://github.com/enamoni/GraphMatch/blob/master/img/GraphMatch.png)
 
 In the very high level These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
