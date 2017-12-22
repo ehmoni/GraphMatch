@@ -96,16 +96,16 @@ Concurrency and Parallelism are not like straight forward programs. Here, what w
 ![Output](https://github.com/enamoni/GraphMatch/blob/master/img/Insight.PNG)
 
 
----
 <blockquote>
 <li> The plots above are the results of our measurement of (1,2) by changing (3,4,5) of the parameter list items mentioned above. Here the values are taken as average of 3 readings i.e. one configuration was run 3 times and taken their average timing.
 <li> <b># Core Increase: </b> First we changed the number of Cores to get the essence of parallelism at processor level. Interesting findings is that, when we increased the number of cores from 1-2-3-4 the running time for the goroutines (orange bars) decreased significantly but the running time of the main function (blue bars) are not affected much. The reason could be main function here always ran in one core it was not shared among multiple cores whereas the goroutines must have been distributed among the 4 cores.
 <li> <b># Goroutine Increase (in 1 Core):</b> As the number of goroutines increased altogether they took little bit more time but notable change was observed in increasing time of the main function. It is expected as in the one core now all the goroutines are working so main will be slower to finish.
 <li> <b># Goroutine Increase: </b> It was done with all 4 cores and the interesting observation is that, as we increased the number of (Pattern Finder) goroutines it did not vary much after certain number. It is better of course than only 1 or few goroutines but after certain points there seems no impact of their numbers. To conclude firmly it has to be experimented more with varied input output ranges that should there be any best number of goroutines for any particular program. For our case with the inputs given, it seems like 20-30 would be the number of goroutines to run it efficiently.
-<li> <b> # Channel Increase: </b> It actually not the number of channel but the size of the channel i.e. the buffer. I tried with
+<li> <b> # Channel Increase: </b> It is actually not the number of channels but the size of the channel i.e. the buffer size. I tried with 20 then increased to 100 and 500 other than the running time of the main function which could be of some other effect, I did not find any significant change in the time of the go routines. But when tried with synchronous channel (i.e. removed the buffer) then found a lag of time between the combination ending time and the pattern finder go routines. For the all other experiments their ending time was same (as the channel was closed as soon as the combination stops generating combinations) and I kept them together (orange bars). But overall, I found that asynchronous communication channels are bit faster than the synchronous approach for this case, as there are many goroutines (Pattern Finders) looking for the combination from the channel and as their number increases blocking the channel by a single goroutine for synchronous communication delays other access which might be ready to receive by then, besides it will also make slower the fast generation of the combinations send to the channel by the single combination generator module. 
 </blockquote>
 
----
+This GraphMatch is an attempt to tackle Combinatoric Problems from concurrency and parallelism point of view. There are many areas where this prototype can be improved and lot of research opportunities that can be explored. It is an open source program, so inviting all enthusiasts to use and contribute to this effort.
+
 ### **License**
 
 This project is licensed under the MIT License - see the [LICENSE](https://opensource.org/) for details
