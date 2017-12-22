@@ -6,7 +6,7 @@ GraphMatch provides a Sub-graph Pattern Matching library for certain types of pa
 
 In the very high level GraphMatch can be considered as composition of 5 modules. Let's go through them in brief:
 
-For all modules the implementation of Graph Data Structured considered:
+For all modules the implementation of Graph Data Structure we defined:
 
 >A Graph is a set of Nodes and Edges
 
@@ -38,7 +38,7 @@ Actually main is the holder of all these modules but the difference is that, whe
 
 ## **Documentation**
 
-Godoc for Golang is an excellent tool which I have used to produce the [**documentation for GraphMatch**](https://godoc.org/github.com/enamoni/GraphMatch) source code. If you use my code and want to extend it, this would be a good point to start from.
+Godoc for Golang is an excellent tool which I have used to produce the [***documentation for GraphMatch***](https://godoc.org/github.com/enamoni/GraphMatch) source code. If you use my code and want to extend it, this would be a good point to start from.
 
 ## **Walking Through GraphMatch!**
 A step by step for running GraphMatch would be:
@@ -49,10 +49,10 @@ A step by step for running GraphMatch would be:
 ```go
 	Parallelism(4)
 	
-	var gSize = 100
-	var sgSize = 50
-	var chSize = 10
-	var grSize = 10
+	var gSize = 500
+	var sgSize = 30
+	var chSize = 100
+	var grSize = 100
 ```
 * After changing the variable values as desired, you can run the program. in my Goland IDE output it appeared as:
 
@@ -74,18 +74,38 @@ A step by step for running GraphMatch would be:
 Yes you can see them in action through the following links:
 
 
->[Main Graph](http://rawgit.com/enamoni/GraphMatch/master/VisualOutput/index.html) &nbsp;&nbsp;&nbsp; || &nbsp;&nbsp;
->[Sub-Graph   ](http://rawgit.com/enamoni/GraphMatch/master/VisualOutput/indexSub.html) &nbsp;&nbsp;&nbsp;|| &nbsp;&nbsp;
->[Main Graph with the Pattern](http://rawgit.com/enamoni/GraphMatch/master/VisualOutput/Pattern.html)
+>[**Main Graph**](http://rawgit.com/enamoni/GraphMatch/master/VisualOutput/index.html) &nbsp;&nbsp;&nbsp; || &nbsp;&nbsp;
+>[**Sub-Graph**   ](http://rawgit.com/enamoni/GraphMatch/master/VisualOutput/indexSub.html) &nbsp;&nbsp;&nbsp;|| &nbsp;&nbsp;
+>[**Main Graph with the Pattern**](http://rawgit.com/enamoni/GraphMatch/master/VisualOutput/Pattern.html)
 
 
 
 ## **Insights**
-Concurrency and Parallelism are not like straight forward programs. Here, what we might think is going to improve the performance, but due to lack of proper organization of statements, design and tuning it might result the opposite of expectations. So, there are some general principles which should be considered while designing as well as there are some special cases specific to the program which cannot be ignored. For this case, we checked some parameters and tried to figure out what works and what not. 
+Concurrency and Parallelism are not like straight forward programs. Here, what we might think is going to improve the performance, but due to lack of proper organization of statements, design and tuning it might result the opposite of what was expected before. So, there are some general principles which should be considered while designing as well as there are some special cases specific to the program which cannot be ignored. For this case, we checked some parameters and tried to figure out what works and what not. Just like any good experiment, while we are observing one parameter impact with the change of another parameter, we try to keep other parameters and environment variables fixed. So, for the below results and insights, we kept the main graph and sub-graph same for all of them. And the scope of the parameters consists of:
+
+>1. Running Time of Main function (in ms)
+>2. Running Time of Combination & (up to last) Pattern Finder goroutines (in s) 
+>3. Number of Cores
+>4. Number of Goroutines (As Pattern Finder)
+>5. Size of the Channel (Combination => Pattern Finder) 
+ 
+<p></p>
+
+
 
 ![Output](https://github.com/enamoni/GraphMatch/blob/master/img/Insight.PNG)
 
 
+---
+<blockquote>
+<li> The plots above are the results of our measurement of (1,2) by changing (3,4,5) of the parameter list items mentioned above. Here the values are taken as average of 3 readings i.e. one configuration was run 3 times and taken their average timing.
+<li> <b># Core Increase: </b> First we changed the number of Cores to get the essence of parallelism at processor level. Interesting findings is that, when we increased the number of cores from 1-2-3-4 the running time for the goroutines (orange bars) decreased significantly but the running time of the main function (blue bars) are not affected much. The reason could be main function here always ran in one core it was not shared among multiple cores whereas the goroutines must have been distributed among the 4 cores.
+<li> <b># Goroutine Increase (in 1 Core):</b> As the number of goroutines increased altogether they took little bit more time but notable change was observed in increasing time of the main function. It is expected as in the one core now all the goroutines are working so main will be slower to finish.
+<li> <b># Goroutine Increase: </b> It was done with all 4 cores and the interesting observation is that, as we increased the number of (Pattern Finder) goroutines it did not vary much after certain number. It is better of course than only 1 or few goroutines but after certain points there seems no impact of their numbers. To conclude firmly it has to be experimented more with varied input output ranges that should there be any best number of goroutines for any particular program. For our case with the inputs given, it seems like 20-30 would be the number of goroutines to run it efficiently.
+<li> <b> # Channel Increase: </b> It actually not the number of channel but the size of the channel i.e. the buffer. I tried with
+</blockquote>
+
+---
 ### **License**
 
 This project is licensed under the MIT License - see the [LICENSE](https://opensource.org/) for details
