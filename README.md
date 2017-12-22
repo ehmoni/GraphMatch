@@ -57,57 +57,31 @@ A step by step for running GraphMatch would be:
 * After changing the variable values as desired, you can run the program. in my Goland IDE output it appeared as:
 
 <p></p>
+
 ![Output](https://github.com/enamoni/GraphMatch/blob/master/img/Output.png)
 
 
-* But of course this does not give the proper feelings, how it looks for an actual graph! To solve that, here comes the 
+* But of course this does not give the proper feelings, how it looks for an actual graph! To solve that, here comes the Forced Directed Graph library. 
+* Open the folder where the JS files and the htmls are located Open the index.html, indexSub.html and Pattern.html, you will see outputs like below:
 
-### Break down into end to end tests
+<p></p>
 
-Explain what these tests test and why
+![Out1](https://github.com/enamoni/GraphMatch/blob/master/img/Out1.PNG)
+![Out2](https://github.com/enamoni/GraphMatch/blob/master/img/Out2.PNG)
+![Out3](https://github.com/enamoni/GraphMatch/blob/master/img/Out3.PNG)
 
-```
-Give an example
-```
 
-### And coding style tests
+##**Insights**
 
-Explain what these tests test and why
+Concurrency and Parallelism are not like straight forward programs. Here, what we might think is going to improve the performance, but due to lack of proper organization of statements, design and tuning it might result the opposite of expectations. So, there are some general principles which should be considered while designing as well as there are some special cases specific to the program which cannot be ignored. For this case, we checked some parameters and tried to figure out what works and what not. 
 
-```
-Give an example
-```
+![Output](https://github.com/enamoni/GraphMatch/blob/master/img/Insight.PNG)
 
-## Deployment
 
-Add additional notes about how to deploy this on a live system
+### **License**
 
-## Built With
-
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
-
-## Contributing
-
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
-
-## Authors
-
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE](https://opensource.org/) for details
 
 ## Acknowledgments
 
-* Hat tip to anyone who's code was used
-* Inspiration
-* etc
+* Special Thanks to  [Emil Sekerinski](http://www.cas.mcmaster.ca/~emil/Welcome.html) for introducing us to the amazing world of concurrency (and golang) and for all the inspiration, encouragement and guidance throughout the learning process!
