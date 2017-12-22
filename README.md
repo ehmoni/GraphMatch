@@ -2,7 +2,7 @@
 GraphMatch provides a Sub-graph Pattern Matching library for certain types of patterns. It uses naive searching algorithm to find the patterns in the Main-graph from the Sub-Graph. And also made good use of concurrency techniques using Golang's Channels and of course Parallelism in the processor. By the way ["Concurrency is not parallelism"](https://blog.golang.org/concurrency-is-not-parallelism) for those who have yet any confusion!
 
 ## **Architecture**
-![alt text](https://github.com/enamoni/GraphMatch/blob/master/img/GraphMatch.png)
+![Graph_Match](https://github.com/enamoni/GraphMatch/blob/master/img/GraphMatch.png)
 
 In the very high level GraphMatch can be considered as composition of 5 modules. Let's go through them in brief:
 
@@ -10,19 +10,19 @@ For all modules the implementation of Graph Data Structured considered:
 
 >A Graph is a set of Nodes and Edges
 
-#### Combination Generator: 
+### Combination Generator: 
 Combination generate all the possible combination of edges from the edge set of the graph. It also uses the channel to pass information to the goroutines for pattern matching (Pattern Finder Module). Point to be noted that, there is a single goroutine for combination generator (We can consider [Parallel Combination Generator Algorithm](http://www.sciencedirect.com/science/article/pii/0020019089901920) in the future versions.
 
-#### Pattern Finder: 
+### Pattern Finder: 
  PatternFinder takes the main graph and channels as input to receive combination data and send to Output Generator Module for JSON file creation. For Sub-Graph information it access the global Sub-Graph Profile (Created by Sub-Graph profiler function through main) as read-only mode. The naive algorithm exhaustively searches all the combinations which is by nature exponential, here we tried to see how such problems can be tackled (for which no efficient algorithm yet proposed) using concurrency and parallelism. Here we can create as many goroutines as we want to run concurrently using any number of cores. In the future versions, we can consider [DualIso: An Algorithm for Subgraph Pattern Matching](http://ieeexplore.ieee.org/document/6906821/?reload=true) for isomorphic pattern matching and of course efficiency. 
 
-#### Output Generator:
+### Output Generator:
 Output take the main graph and channel to receive the Output pattern for JSON file creation with the pattern marks. Also need to change the file name and path for using as a package. It can also be provided from main function as inputs. Point to be noted again, there are multiple Pattern Finder goroutines but only one Output goroutine, and as soon as they find any matched pattern, the report it to the Output module through the channel.
 
-#### Visual Graph:
+### Visual Graph:
 This module, takes in the JSON file created by the Output module and creates [Forced Directed Graphs](https://en.wikipedia.org/wiki/Force-directed_graph_drawing) in the browser with Java Script. It creates nice visuals (mouse interactive) visual graphs inspired by physical particle simulation. This part is adapted from open source [JS library](https://gist.github.com/mbostock) by Mike Boston.
 
-#### Main and Other Programs:
+### Main and Other Programs:
 Actually main is the holder of all these modules but the difference is that, when we use goroutines, the main process also runs in parallel with all other goroutines and if it's shorter and faster it may finish before other goroutines ends. So, results which we are expecting to be presented might not be visible from main, so there are few techniques (like [sync.WaitGroup](https://golang.org/pkg/sync/)) which should be used to handle such situation. About other procedures in a nut-shell:
 
 <blockquote>
@@ -35,33 +35,28 @@ Actually main is the holder of all these modules but the difference is that, whe
 
 </blockquote>
 
-### Prerequisites
 
-What things you need to install the software and how to install them
+## **Documentation**
 
+Godoc for Golang is an excellent tool which I have used to produce the [**documentation for GraphMatch**](https://godoc.org/github.com/enamoni/GraphMatch) source code. If you use my code and want to extend it, this would be a good point to start from.
+
+## **Walking Through GraphMatch!**
+A step by step for running GraphMatch would be:
+
+* You download everything and open the GraphMatch.go file in your favorite IDE/Editor (I have used [Goland](https://www.jetbrains.com/go/).
+* Change the file path (in the main program) where you want to write the JSON files for Graph Visuals.
+* Now in the main function, you can choose the number of Cores (1-4 in my case) as parameter to the Parallelism function. In the next section, you can modify number of nodes you want to for the main graph by gSize and for Sub-Graph by sgSize. These two works as parameters for RandomGraph function. Then you can fix the size of the buffer in the channel for Combination to PatternFinder by chSize and also can change the number of goroutines you want to run concurrently by grSize.
+```go
+	Parallelism(4)
+	
+	var gSize = 100
+	var sgSize = 50
+	var chSize = 10
+	var grSize = 10
 ```
-Give examples
-```
+* After changing the variable values as desired, you can run the program. in my Goland IDE output it appeared as:
+![Output](https://github.com/enamoni/GraphMatch/blob/master/img/Output.png)
 
-### Installing
-
-A step by step series of examples that tell you have to get a development env running
-
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
-
-## Running the tests
 
 Explain how to run the automated tests for this system
 
