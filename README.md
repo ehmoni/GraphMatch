@@ -1,12 +1,39 @@
-
-# **GraphMatch** : Powered by Concurrency & Parallelism
+# __GraphMatch__ :  Powered by Concurrency & Parallelism
 GraphMatch provides a Sub-graph Pattern Matching library for certain types of patterns. It uses naive searching algorithm to find the patterns in the Main-graph from the Sub-Graph. And also made good use of concurrency techniques using Golang's Channels and of course Parallelism in the processor. By the way ["Concurrency is not parallelism"](https://blog.golang.org/concurrency-is-not-parallelism) for those who have yet any confusion!
 
 ## **Architecture**
 ![alt text](https://github.com/enamoni/GraphMatch/blob/master/img/GraphMatch.png)
 
-In the very high level These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
-#### Types
+In the very high level GraphMatch can be considered as composition of 5 modules. Let's go through them in brief:
+
+For all modules the implementation of Graph Data Structured considered:
+
+>A Graph is a set of Nodes and Edges
+
+#### Combination Generator: 
+Combination generate all the possible combination of edges from the edge set of the graph. It also uses the channel to pass information to the goroutines for pattern matching (Pattern Finder Module). Point to be noted that, there is a single goroutine for combination generator (We can consider [Parallel Combination Generator Algorithm](http://www.sciencedirect.com/science/article/pii/0020019089901920) in the future versions.
+
+#### Pattern Finder: 
+ PatternFinder takes the main graph and channels as input to receive combination data and send to Output Generator Module for JSON file creation. For Sub-Graph information it access the global Sub-Graph Profile (Created by Sub-Graph profiler function through main) as read-only mode. The naive algorithm exhaustively searches all the combinations which is by nature exponential, here we tried to see how such problems can be tackled (for which no efficient algorithm yet proposed) using concurrency and parallelism. Here we can create as many goroutines as we want to run concurrently using any number of cores. In the future versions, we can consider [DualIso: An Algorithm for Subgraph Pattern Matching](http://ieeexplore.ieee.org/document/6906821/?reload=true) for isomorphic pattern matching and of course efficiency. 
+
+#### Output Generator:
+Output take the main graph and channel to receive the Output pattern for JSON file creation with the pattern marks. Also need to change the file name and path for using as a package. It can also be provided from main function as inputs. Point to be noted again, there are multiple Pattern Finder goroutines but only one Output goroutine, and as soon as they find any matched pattern, the report it to the Output module through the channel.
+
+#### Visual Graph:
+This module, takes in the JSON file created by the Output module and creates [Forced Directed Graphs](https://en.wikipedia.org/wiki/Force-directed_graph_drawing) in the browser with Java Script. It creates nice visuals (mouse interactive) visual graphs inspired by physical particle simulation. This part is adapted from open source [JS library](https://gist.github.com/mbostock) by Mike Boston.
+
+#### Main and Other Programs:
+Actually main is the holder of all these modules but the difference is that, when we use goroutines, the main process also runs in parallel with all other goroutines and if it's shorter and faster it may finish before other goroutines ends. So, results which we are expecting to be presented might not be visible from main, so there are few techniques (like [sync.WaitGroup](https://golang.org/pkg/sync/)) which should be used to handle such situation. About other procedures in a nut-shell:
+
+<blockquote>
+<li><b>Parallelism </b>:  Parallelism prints how many cores available in the processor and then changes the number of cores to be used based on the input provided by the user through main.
+<li> <b>Random Graph Generator</b> RandomGraph generates random graph based on the input number of vertices. It uses random integer number to select 2 nodes randomly and connect them with an edge.
+<li> <b>Sub-Graph Profiler</b>:  It takes input the Sub-graph and makes a profile for that in the global variable to be shared by others goroutines. The idea is that, you do not want to calculate the Sub-Graph features for every pattern finder goroutine, instead, build it once as global variable and shared by all processes as read-only mode.
+<li> <b>Performance Calculator</b>:  Actually this is not an isolated function, but a section inside "main" program to calculate performance (mostly time) varying Core, Channel Buffer Size, Number of Goroutines etc. to get some insight about tuning such programs for optimum performance. 
+<li><b> JSON String Producer</b>This takes input a Graph and produce string which can be used for JSON file creation. It takes into account the color and thickness of the edges (marking pattern of sub-graph in the graph) through JS Output.
+<li><b>Set</b> Golang doesn't have generics and there was requirement for a Set data structure to identify unique items in a "bag" so it was adapted from this <a href="https://github.com/fatih/set">Set Library</a> by Fatih.
+
+</blockquote>
 
 ### Prerequisites
 
@@ -87,6 +114,3 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 * Hat tip to anyone who's code was used
 * Inspiration
 * etc
-
-
-
