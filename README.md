@@ -70,9 +70,17 @@ A step by step for running GraphMatch would be:
 ![Out2](https://github.com/enamoni/GraphMatch/blob/master/img/Out2.PNG)
 ![Out3](https://github.com/enamoni/GraphMatch/blob/master/img/Out3.PNG)
 
+### Interactive Output:
+Yes you can see them in action through the following links:
 
-##**Insights**
 
+>[Main Graph](http://rawgit.com/enamoni/GraphMatch/master/VisualOutput/index.html) &nbsp;&nbsp;&nbsp; || &nbsp;&nbsp;
+>[Sub-Graph   ](http://rawgit.com/enamoni/GraphMatch/master/VisualOutput/indexSub.html) &nbsp;&nbsp;&nbsp;|| &nbsp;&nbsp;
+>[Main Graph with the Pattern](http://rawgit.com/enamoni/GraphMatch/master/VisualOutput/Pattern.html)
+
+
+
+## **Insights**
 Concurrency and Parallelism are not like straight forward programs. Here, what we might think is going to improve the performance, but due to lack of proper organization of statements, design and tuning it might result the opposite of expectations. So, there are some general principles which should be considered while designing as well as there are some special cases specific to the program which cannot be ignored. For this case, we checked some parameters and tried to figure out what works and what not. 
 
 ![Output](https://github.com/enamoni/GraphMatch/blob/master/img/Insight.PNG)
@@ -84,4 +92,4 @@ This project is licensed under the MIT License - see the [LICENSE](https://opens
 
 ## Acknowledgments
 
-* Special Thanks to  [Emil Sekerinski](http://www.cas.mcmaster.ca/~emil/Welcome.html) for introducing us to the amazing world of concurrency (and golang) and for all the inspiration, encouragement and guidance throughout the learning process!
+* Special Thanks to  [Prof Emil Sekerinski](http://www.cas.mcmaster.ca/~emil/Welcome.html) for introducing us to the amazing world of concurrency (and golang) and for all the inspiration, encouragement and guidance throughout the learning process!
